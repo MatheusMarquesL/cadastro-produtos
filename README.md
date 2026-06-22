@@ -52,14 +52,14 @@ Funcionalidades
 ### Instruções para Execução
 
     Instale todas as dependências do projeto executando o comando:
-    Bash
+   
 
     npm install
 
     Configure a URL da sua API no arquivo src/services/api.ts.
 
     Inicie o servidor de desenvolvimento do Expo com o comando:
-    Bash
+ 
 
     npx expo start
 
