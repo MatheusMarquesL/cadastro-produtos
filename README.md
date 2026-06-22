@@ -1,6 +1,6 @@
-### Documentação do Projeto: Catálogo de Produtos
-# Autor: Matheus Marques Larréa
-# Descrição do Projeto
+# Documentação do Projeto: Catálogo de Produtos
+## Autor: Matheus Marques Larréa
+### Descrição do Projeto
 
 Este é um aplicativo mobile de catálogo de produtos desenvolvido em React Native com Expo. O objetivo da atividade é consumir dados de uma API externa e sincronizá-los em um banco de dados local utilizando o SQLite, garantindo que o aplicativo funcione mesmo quando o dispositivo estiver sem conexão com a internet (Offline-First).
 Funcionalidades
@@ -15,7 +15,7 @@ Funcionalidades
 
     Exclusão de Produtos: Apaga os registros simultaneamente na API e no SQLite.
 
-## Tecnologias Utilizadas
+### Tecnologias Utilizadas
 
     React Native
 
@@ -31,7 +31,7 @@ Funcionalidades
 
     Shopify FlashList
 
-## Estrutura do Projeto
+### Estrutura do Projeto
 
     app/_layout.tsx: Configura a navegação em pilha (Stack) e inicializa o banco de dados SQLite.
 
@@ -49,7 +49,7 @@ Funcionalidades
 
     src/types/Produto.ts: Definição dos campos e tipos que estruturam o objeto de um produto.
 
-## Instruções para Execução
+### Instruções para Execução
 
     Instale todas as dependências do projeto executando o comando:
     Bash
