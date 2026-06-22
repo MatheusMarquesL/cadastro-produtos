@@ -1,98 +1,114 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useCallback } from "react";
+import { View, StyleSheet, TouchableOpacity, Text, Alert } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { useRouter, useFocusEffect, Href } from "expo-router";
+import { ProdutoItem } from "../components/ProdutoItem";
+import { Produto } from "../types/Produto";
+import { syncDados } from "../services/sync";
+import { deleteProdutoLocal } from "../database/database";
+import { api } from "../services/api";
+import { Ionicons } from "@expo/vector-icons";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function Home() {
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+  const carregarDados = async () => {
+    setLoading(true);
+    const dados = await syncDados();
+    setProdutos(dados);
+    setLoading(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarDados();
+    }, []),
   );
-}
 
-export default function HomeScreen() {
+  const handleDelete = async (id: string) => {
+    Alert.alert("Apagar", "Deseja remover este produto?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Apagar",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await api.delete(`/produtos/${id}`);
+            await deleteProdutoLocal(id);
+            setProdutos((prev) => prev.filter((p) => p.id !== id));
+          } catch (e) {
+            Alert.alert(
+              "Erro",
+              "Não foi possível apagar o produto. Verifique sua conexão.",
+            );
+          }
+        },
+      },
+    ]);
+  };
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <View style={styles.container}>
+      {loading ? (
+        <Text style={styles.loadingText}>Sincronizando produtos...</Text>
+      ) : (
+        <FlashList
+          data={produtos}
+          keyExtractor={(item: Produto) => item.id}
+          renderItem={({ item }: { item: Produto }) => (
+            <ProdutoItem produto={item} onDelete={handleDelete} />
+          )}
+          {...({ estimatedItemSize: 100 } as any)}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          ListEmptyComponent={
+            <Text style={styles.empty}>Nenhum produto cadastrado.</Text>
+          }
+        />
+      )}
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => router.push("/produtos" as Href)}
+      >
+        <Ionicons name="add" size={32} color="#fff" />
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#fafafa",
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  loadingText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#666",
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  empty: {
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 16,
+    color: "#999",
   },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  fab: {
+    position: "absolute",
+    bottom: 30,
+    right: 30,
+    backgroundColor: "#007bff",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
 });

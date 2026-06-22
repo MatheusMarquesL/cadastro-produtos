@@ -1,56 +1,66 @@
-# Welcome to your Expo app 👋
+### Documentação do Projeto: Catálogo de Produtos
+# Autor: Matheus Marques Larréa
+# Descrição do Projeto
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Este é um aplicativo mobile de catálogo de produtos desenvolvido em React Native com Expo. O objetivo da atividade é consumir dados de uma API externa e sincronizá-los em um banco de dados local utilizando o SQLite, garantindo que o aplicativo funcione mesmo quando o dispositivo estiver sem conexão com a internet (Offline-First).
+Funcionalidades
 
-## Get started
+    Listagem de Produtos: Exibe todos os itens armazenados localmente no dispositivo.
 
-1. Install dependencies
+    Sincronização (Sync): Busca os produtos da API e os salva no banco SQLite local sempre que a tela inicial é aberta.
 
-   ```bash
-   npm install
-   ```
+    Modo Offline: Caso a API fique indisponível ou o aparelho perca a conexão, o aplicativo busca e exibe os dados salvos no SQLite.
 
-2. Start the app
+    Cadastro de Produtos: Envia novos itens para a API e os armazena de forma imediata no banco local.
 
-   ```bash
-   npx expo start
-   ```
+    Exclusão de Produtos: Apaga os registros simultaneamente na API e no SQLite.
 
-In the output, you'll find options to open the app in a
+## Tecnologias Utilizadas
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+    React Native
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+    Expo
 
-## Get a fresh project
+    Expo Router
 
-When you're ready, run:
+    TypeScript
 
-```bash
-npm run reset-project
-```
+    SQLite (expo-sqlite)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+    Axios
 
-### Other setup steps
+    Shopify FlashList
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Estrutura do Projeto
 
-## Learn more
+    app/_layout.tsx: Configura a navegação em pilha (Stack) e inicializa o banco de dados SQLite.
 
-To learn more about developing your project with Expo, look at the following resources:
+    app/index.tsx: Tela principal contendo a listagem de produtos com FlashList e o botão para cadastrar.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+    app/produtos.tsx: Tela do formulário para adicionar novos produtos.
 
-## Join the community
+    src/components/ProdutoItem.tsx: Componente visual do card que exibe as informações de cada produto na lista.
 
-Join our community of developers creating universal apps.
+    src/database/database.ts: Configuração do banco de dados e execução dos comandos SQL puros (CREATE, INSERT, SELECT, DELETE).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+    src/services/api.ts: Configuração do Axios para comunicação com a API REST.
+
+    src/services/sync.ts: Lógica responsável por baixar os dados da API e salvá-los no SQLite.
+
+    src/types/Produto.ts: Definição dos campos e tipos que estruturam o objeto de um produto.
+
+## Instruções para Execução
+
+    Instale todas as dependências do projeto executando o comando:
+    Bash
+
+    npm install
+
+    Configure a URL da sua API no arquivo src/services/api.ts.
+
+    Inicie o servidor de desenvolvimento do Expo com o comando:
+    Bash
+
+    npx expo start
+
+    Abra o aplicativo Expo Go no seu celular e escaneie o código QR exibido no terminal.
