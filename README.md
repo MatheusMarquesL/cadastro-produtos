@@ -64,3 +64,9 @@ Funcionalidades
     npx expo start
 
     Abra o aplicativo Expo Go no seu celular e escaneie o código QR exibido no terminal.
+
+## Referências e Repositórios
+
+    URL da API de Testes (MockAPI): [https://mockapi.io/projects/6a39812a64a2d826922410f9]
+
+    Repositório do Código Fonte (GitHub): [https://github.com/MatheusMarquesL/cadastro-produtos.git]
